@@ -5,10 +5,12 @@
  */
 package chats;
 
+import java.awt.List;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.ArrayList;
 
 /**
  *
@@ -25,9 +27,13 @@ public class chat_interface extends javax.swing.JFrame {
     static DataInputStream din;
     static DataOutputStream dout;
     static boolean gotit = false;
-    static List listsockets;
+    //static Lista listsockets;
+    static ArrayList lista;
+    static ArrayList listad;
+    static ArrayList listap;
     static int actualPort;
     static int reference;
+    static String actualChat;
     
     public chat_interface() {
         initComponents();
@@ -93,6 +99,7 @@ public class chat_interface extends javax.swing.JFrame {
 
         contacts.setColumns(20);
         contacts.setRows(5);
+        contacts.setCursor(new java.awt.Cursor(java.awt.Cursor.TEXT_CURSOR));
         jScrollPane2.setViewportView(contacts);
 
         upbut.setText("Up");
@@ -199,11 +206,14 @@ public class chat_interface extends javax.swing.JFrame {
     private void msg_sendActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_msg_sendActionPerformed
         // TODO add your handling code here:
         try{
+            int puerto = Integer.parseInt(portto.getText().trim());
+            s2 = new Socket("127.0.0.1", puerto);
+            dout = new DataOutputStream(s2.getOutputStream());
             String msgout = "";
             msgout = msg_entry.getText().trim();
             dout.writeUTF(msgout);
         }catch(Exception e){
-            System.out.println(e);
+            System.out.println("Send"+e);
         }
         
         
@@ -219,48 +229,67 @@ public class chat_interface extends javax.swing.JFrame {
         try{
             int puerto = Integer.parseInt(portto.getText().trim());
             
-            //if (!listsockets.isIn(puerto)){
-                s2 = new Socket(ipto.getText().trim(), puerto);
-                dout = new DataOutputStream(s2.getOutputStream());
-                listsockets.appe(s2, puerto, dout);
+            //if (!listap.contains(puerto)){
+                //s2.close();
+                //dout.close();
                 
-                contacts.setText("Escribiendo a nuevo contacto a:"+puerto);
-                actualPort = puerto;
-                reference ++;
-                //listsockets.printL();
+ 
+                
+                //lista.add(sn);
+                //listad.add(dos);
+                //listap.add(puerto);
+                
+               
+                //System.out.println(listap);
+                
+                
+                if (lista.size() == 1){
+                    actualPort = puerto;
+                }
+                //System.out.println();
+                //contacts.setText("Escribiendo a nuevo contacto a:"+puerto);
+                //actualPort = puerto;
+                //reference ++;
+                
             //}
             //else{
                 //System.out.println("El contacto ya existe");
             //}
-            
-            
-               
+       
         }catch(Exception e){
-            System.out.println(e);
+            System.out.println("Add"+e);
         }
     }//GEN-LAST:event_addActionPerformed
 
     private void upbutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_upbutActionPerformed
-        if ((listsockets.getLargo() > 1) && (reference > 1)){
-            reference = reference-1;
-            actualPort = listsockets.srchByIndex(reference-1);
-            contacts.setText("Escribir a:"+actualPort+"\nPresione select para confirmar");
+        if ((lista.size() > 1) && (reference > 1)){
+            reference --;
+            actualPort = (int)listap.get(reference);
+            //contacts.setText("Escribir a:"+actualPort+"\nPresione select para confirmar");
+            
         }
     }//GEN-LAST:event_upbutActionPerformed
 
     private void selectActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_selectActionPerformed
         // TODO add your handling code here:
-        s2 = listsockets.searchSocket(actualPort);
-        dout = listsockets.searchdout(actualPort);
-        contacts.setText("Escribiendo a nuevo contacto a:"+actualPort);
+        //s2 = (Socket)lista.get(listap.indexOf(actualPort));
+        //dout = (DataOutputStream)listad.get(listap.indexOf(actualPort));
+        //contacts.setText("Escribiendo a nuevo contacto a:"+actualPort);
+        try{
+            s2.close();
+            dout.close();
+        }catch (Exception e){
+            System.out.println(e);
+        }
+            
     }//GEN-LAST:event_selectActionPerformed
 
     private void downbutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_downbutActionPerformed
         // TODO add your handling code here:
-        if ((listsockets.getLargo() > 1)&&(reference < listsockets.getLargo())){
-            reference = reference+1;
-            actualPort = listsockets.srchByIndex(reference-1);
-            contacts.setText("Escribir a:"+actualPort+"\nPresione select para confirmar");
+        if (reference < lista.size()){
+            reference ++;
+            actualPort = (int)lista.get(reference);
+            //contacts.setText("Escribir a:"+actualPort+"\nPresione select para confirmar");
         }
     }//GEN-LAST:event_downbutActionPerformed
 
@@ -297,7 +326,8 @@ public class chat_interface extends javax.swing.JFrame {
                 new chat_interface().setVisible(true);
             }
         });
-       
+        //lista = new ArrayList();
+        //listad = new ArrayList();
         String msgin = "";
         boolean got = false;
         reference = 0;
@@ -310,17 +340,22 @@ public class chat_interface extends javax.swing.JFrame {
                 s = ss.accept();
                 
             }catch(Exception e){
-                System.out.println(e);
+                System.out.println("sockets"+e);
                 address++;
             }
         }
-            din = new DataInputStream(s.getInputStream());
             
-                
-            while(!msgin.equals("exit")){
-                msgin = din.readUTF();
-                msg_disp.setText(msg_disp.getText().trim()+"\n"+msgin);
+            
+            try{    
+                din = new DataInputStream(s.getInputStream());
+                while(true){
+                    msgin = din.readUTF();
+                    msg_disp.setText(msg_disp.getText().trim()+"\n"+msgin);
+                    contacts.setText(Integer.toString(actualPort));
+                }
 
+            }catch(Exception e){
+                System.out.println("Input"+e);
             }
         }
        

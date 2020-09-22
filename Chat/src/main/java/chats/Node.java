@@ -18,26 +18,25 @@ public class Node {
     public int index;
     public int portc;
     public DataOutputStream out;
-    public void setValue(Socket valor, int ind, int prt, DataOutputStream output){
-        value = valor;
-        index = ind;
-        portc = prt;
-        out = output;
+    public Node(Socket valor, int prt, DataOutputStream output){
+        this.value = valor;
+        this.portc = prt;
+        this.out = output;
     }
     public void setNext(Node sig){
-        next = sig;
+        this.next = sig;
     }
-    public int getIndex(){
-        return index;
-    }
+    //public int getIndex(){
+    //    return this.index;
+    //}
     public int getPort(){
-        return portc;
+        return this.portc;
     }
     public Socket getSocket(){
-        return value;
+        return this.value;
     }
     public DataOutputStream getDout(){
-        return out;
+        return this.out;
     }
     
 }

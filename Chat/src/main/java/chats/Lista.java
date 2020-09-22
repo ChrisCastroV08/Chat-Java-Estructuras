@@ -12,7 +12,7 @@ import java.net.Socket;
  *
  * @author A
  */
-public class List {
+public class Lista {
     public Node head = null;
     public int largo = 0;
 
@@ -48,7 +48,6 @@ public class List {
         System.out.println("]");
     }
     public int getLargo(){
-        
         return largo;
     }
     public boolean isIn(int port){
