@@ -24,8 +24,7 @@ public class Servidor {
 		
 		MarcoServidor mimarco=new MarcoServidor();
 		
-		mimarco.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-			
+		mimarco.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);			
 	}
     
 }
