@@ -19,6 +19,10 @@ import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.ListSelectionModel;
+import static javax.swing.ListSelectionModel.SINGLE_SELECTION;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 
 /**
  *
@@ -27,7 +31,8 @@ import javax.swing.JTextField;
 public class LaminaMarcoCliente extends JPanel implements Runnable{
 	
     public LaminaMarcoCliente(){
-            contacts = new ArrayList();
+            listch = new ChatsList();
+            
             puerto = 12001; 
             
             JLabel texto=new JLabel("-Chat-");
@@ -35,6 +40,14 @@ public class LaminaMarcoCliente extends JPanel implements Runnable{
             add(texto);
             
             listaContacts = new JList();
+            
+            ListReact lr = new ListReact();
+            
+            listaContacts.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);        
+            
+            listaContacts.addListSelectionListener(lr);
+            
+            
             
             add(listaContacts);
             
@@ -94,12 +107,17 @@ public class LaminaMarcoCliente extends JPanel implements Runnable{
                     rec = (Paquete)pk.readObject();
                     
                     
-                    contacts.add(rec.getMyport());
-                    listaContacts.setListData(contacts.toArray());
-                    
-                    chat_space.append("Mensaje: "+rec.getMsg()+"From: "+rec.getMyport());
                     
                     
+                    if (!listch.isIn(rec.getMyport())){
+                        //chat_space.append("Conversacion con"+rec.getMyport()+"\nRecibido: "+rec.getMsg()+"\n");
+                        
+                        listch.addBoth(rec.getMyport(), "Conversacion con: "+rec.getMyport()+"\n"+"Recibido: "+rec.getMsg()+"\n");
+                        listaContacts.setListData(listch.getContacts().toArray());
+                    }else{
+                        chat_space.append("Recibido: "+rec.getMsg()+"\n");
+                        listch.appendChat(rec.getMyport(), "Recibido: "+rec.getMsg()+"\n");
+                    }
 
                     //Socket sendto = new Socket("127.0.0.1",Integer.parseInt(rec.getPort()));
                     //ObjectOutputStream tosend = new ObjectOutputStream(sendto.getOutputStream());
@@ -124,12 +142,29 @@ public class LaminaMarcoCliente extends JPanel implements Runnable{
         @Override
         public void actionPerformed(ActionEvent e) {
             //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-            puertoEnvio = Integer.parseInt(port.getText());
-            contacts.add(port.getText());
-            listaContacts.setListData(contacts.toArray());
+            //puertoEnvio = Integer.parseInt(port.getText());
+
+            if (!listch.isIn(port.getText())){
+                listch.addBoth(port.getText(), "Conversacion con: "+port.getText()+"\n");
+                listaContacts.setListData(listch.getContacts().toArray());
+            }
+           
         }
         
     }
+    
+    private class ListReact implements ListSelectionListener{
+
+        @Override
+        public void valueChanged(ListSelectionEvent e) {
+            //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+            if (!listaContacts.isSelectionEmpty()){
+            puertoEnvio = Integer.parseInt(((String)listaContacts.getSelectedValue()));
+            chat_space.setText(listch.getChat(Integer.toString(puertoEnvio)));
+            }
+        }
+    }
+    
     private class EnviarTexto implements ActionListener{
     
     
@@ -140,13 +175,15 @@ public class LaminaMarcoCliente extends JPanel implements Runnable{
             //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
         //}
             try{
-                Paquete pk = new Paquete(Integer.toString(getPuerto()),port.getText(), campo1.getText());
-                Socket s = new Socket("127.0.0.1", Integer.parseInt(port.getText()));
+                System.out.println(puertoEnvio);
+                Paquete pk = new Paquete(Integer.toString(getPuerto()), Integer.toString(puertoEnvio), campo1.getText());
+                Socket s = new Socket("127.0.0.1", puertoEnvio);
 
                 ObjectOutputStream datos = new ObjectOutputStream(s.getOutputStream());
 
                 datos.writeObject(pk);
-
+                chat_space.append("Yo: "+campo1.getText()+"\n");
+                listch.appendChat(port.getText(), "Yo: "+campo1.getText()+"\n");
                 s.close();
 
             }catch(Exception e1){
@@ -156,8 +193,10 @@ public class LaminaMarcoCliente extends JPanel implements Runnable{
         }
 
     }
-	public java.util.List<String> contacts;
+	public ChatsList listch;
+        
 	public int puerto; 
+        
         private JTextArea chat_space;
         		
 	private JTextField campo1, port;
