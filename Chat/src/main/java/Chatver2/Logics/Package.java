@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package Chatver2;
+package Chatver2.Logics;
 
 import java.io.Serializable;
 
@@ -11,21 +11,25 @@ import java.io.Serializable;
  *
  * @author A
  */
-public class Paquete implements Serializable{
+public class Package implements Serializable {
+
     private String myport, port, msg;
-    
-    public Paquete(String myport, String port, String msg){
+
+    public Package(String myport, String port, String msg) {
         this.myport = myport;
         this.port = port;
         this.msg = msg;
     }
-    public String getMyport(){
+
+    public String getMyport() {
         return this.myport;
     }
-    public String getPort(){
+
+    public String getPort() {
         return this.port;
     }
-    public String getMsg(){
+
+    public String getMsg() {
         return this.msg;
     }
 
