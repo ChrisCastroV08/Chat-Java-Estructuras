@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package Chatver2.GUI;
 
 import javax.swing.JButton;
@@ -13,29 +8,49 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
 /**
+ * AppInterface defines the attributes that will be seen on the run time Graphic Interface
  *
- * @author A
  */
 public class AppInterface extends JPanel {
-
+    /**
+     * Class Constructor
+     * 
+     */
     public AppInterface() {
 
         JLabel texto = new JLabel("-Chat-");
 
         add(texto);
+        
+        
+        JLabel textip = new JLabel("Ip");
+        
+        add(textip);
+        
 
-        listaContacts = new JList();
+        ip = new JTextField(8);
 
-        add(listaContacts);
+        add(ip);
+        
+        
+        JLabel textport = new JLabel("Puerto");
+        
+        add(textport);
+        
 
+        port = new JTextField(6);
+
+        add(port);
+        
         boton2 = new JButton("Agregar");
 
         add(boton2);
+        
+        listaContacts = new JList();
 
-        port = new JTextField(8);
-
-        add(port);
-
+        add(listaContacts);
+        
+        
         chat_space = new JTextArea(12, 20);
 
         add(chat_space);
@@ -48,19 +63,19 @@ public class AppInterface extends JPanel {
 
         add(miboton);
 
-        //Thread th = new Thread(this);
-        //th.start();
+        
     }
 
     public JTextArea chat_space;
 
-    public JTextField campo1, port;
+    public JTextField campo1, port, ip;
 
     public JButton miboton;
-
+    
     public JButton boton2;
 
     public JList listaContacts;
-
-    //static int sender;
+    
+    
+    
 }

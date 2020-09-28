@@ -1,7 +1,7 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+/**
+ * Primer trabajo extraclase de Estructuras de Datos I
+ * Por: Anthony Chaves Achoy
+ * Segundo Semestre 2020
  */
 package Chatver2;
 
@@ -12,16 +12,17 @@ import javax.swing.*;
 
 /**
  *
- * @author A
+ * @author Anthony Chaves Achoy
+ * @version 2.0
+ * @since 26/09/2020
  */
 public class AppMain {
 
     public static void main(String[] args) {
-        // TODO Auto-generated method stub
 
-        AppWindow mimarco = new AppWindow();
+        AppWindow window = new AppWindow();
 
-        mimarco.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
     }
 }

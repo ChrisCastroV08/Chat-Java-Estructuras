@@ -1,17 +1,13 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package Chatver2.GUI;
 
-/**
- *
- * @author A
- */
 import Chatver2.Logics.ChatManager;
 import javax.swing.*;
 
+/**
+ * 
+ * AppWindow defines the size of the display window and calls the GUI managment class
+ * 
+ */
 
 public class AppWindow extends JFrame {
 
