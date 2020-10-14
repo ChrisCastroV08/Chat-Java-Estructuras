@@ -5,8 +5,15 @@ import Chatver2.GUI.AppInterface;
 import Chatver2.Logics.ChatsList;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
 import java.io.ObjectOutputStream;
+import java.net.ConnectException;
 import java.net.Socket;
+import java.net.UnknownHostException;
+import java.util.logging.Logger;
+import Chatver2.Logics.Logger.LoggerManager;
+import java.util.logging.Level;
+import Chatver2.AppMain;
 
 /**
  *
@@ -20,6 +27,9 @@ public class SendText implements ActionListener {
     private int puertoEnvio;
     private int myPort;
     private String ip, myIp;
+    
+    private Logger bitacora = AppMain.bitacora;
+
     /**
      * Class Cosntructor
      * @param l1 List that will be checked
@@ -53,23 +63,47 @@ public class SendText implements ActionListener {
      * Sends a message by using sockets
      */
     public void actionPerformed(ActionEvent e) {
+        Socket socketOut = null;
 
         try {
+            
             System.out.println(puertoEnvio);
             Chatver2.Logics.Package pk = new Chatver2.Logics.Package(Integer.toString(myPort),myIp,Integer.toString(puertoEnvio), frame.campo1.getText());
-            Socket socketOut = new Socket(ip, puertoEnvio);
+            socketOut = new Socket(ip, puertoEnvio);
 
             ObjectOutputStream dataSend = new ObjectOutputStream(socketOut.getOutputStream());
 
             dataSend.writeObject(pk);
             frame.chat_space.append("Yo: " + frame.campo1.getText() + "\n");
             listch.appendChat(ip+":"+Integer.toString(puertoEnvio), "Yo: " + frame.campo1.getText() + "\n");
-            socketOut.close();
-
-        } catch (Exception e1) {
-            System.out.println(e1);
+            
+            bitacora.info("Mensaje enviado");
+            
+        } 
+        catch (IllegalArgumentException e0){
+            bitacora.severe("El puerto esta fuera de rango"+e0.getMessage());
         }
-
+        catch (ConnectException e1) {
+            
+            bitacora.severe("Se presento un error ya que el usuario deseado no está conectado"+e1.getMessage());
+        }
+        catch (UnknownHostException e2) {
+            
+            bitacora.severe("No se conoce el usuario destinatario"+e2.getMessage());
+        }
+        catch (IOException e3){
+            bitacora.severe("Ocurrió al crear el puerto"+e3.getMessage());
+        }
+        finally{
+            if (socketOut != null){
+                try{
+                    socketOut.close();
+                }
+                catch (IOException e4){
+                    bitacora.severe("Ocurrió un error al cerrar el puerto"+e4.getMessage());
+                }
+            }
+        }
     }
 
 }

@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="windows-1252" standalone="no"?>
+<!DOCTYPE log SYSTEM "logger.dtd">
+<log>
+<record>
+  <date>2020-10-10T13:52:26</date>
+  <millis>1602359546175</millis>
+  <sequence>0</sequence>
+  <logger>Chatver2.Logics</logger>
+  <level>INFO</level>
+  <class>Chatver2.Logics.ChatManager</class>
+  <method>run</method>
+  <thread>15</thread>
+  <message>Se creó el puerto</message>
+</record>
+<record>
+  <date>2020-10-10T13:53:03</date>
+  <millis>1602359583410</millis>
+  <sequence>1</sequence>
+  <logger>Chatver2.Logics</logger>
+  <level>SEVERE</level>
+  <class>Chatver2.Logics.Listeners.SendText</class>
+  <method>actionPerformed</method>
+  <thread>17</thread>
+  <message>Se presentó un error ya que el usuario deseado no está conectadoConnection refused: connect</message>
+</record>
+</log>

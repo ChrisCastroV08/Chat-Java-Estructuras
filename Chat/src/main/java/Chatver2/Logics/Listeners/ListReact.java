@@ -29,18 +29,18 @@ public class ListReact implements ListSelectionListener {
         evento = ev;
     }
         
-        @Override
-        /**
-         * Listener that will be action when the value of the list changes
-         */
-        public void valueChanged(ListSelectionEvent e) {
-            //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-            if (!frame.listaContacts.isSelectionEmpty()) {
-                String[] paramsOut = ((String) frame.listaContacts.getSelectedValue()).split(":");
-                puertoEnvio = Integer.parseInt(paramsOut[1]);
-                ip = paramsOut[0];
-                evento.setPortOut(ip,puertoEnvio);
-                frame.chat_space.setText(listch.getChat(ip+":"+Integer.toString(puertoEnvio)));
-            }
+    @Override
+    /**
+     * Listener that will be action when the value of the list changes
+     */
+    public void valueChanged(ListSelectionEvent e) {
+        //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        if (!frame.listaContacts.isSelectionEmpty()) {
+            String[] paramsOut = ((String) frame.listaContacts.getSelectedValue()).split(":");
+            puertoEnvio = Integer.parseInt(paramsOut[1]);
+            ip = paramsOut[0];
+            evento.setPortOut(ip,puertoEnvio);
+            frame.chat_space.setText(listch.getChat(ip+":"+Integer.toString(puertoEnvio)));
         }
     }
+}

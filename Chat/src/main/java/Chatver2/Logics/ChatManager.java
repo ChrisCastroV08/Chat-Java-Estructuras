@@ -9,10 +9,14 @@ import Chatver2.GUI.AppInterface;
 import Chatver2.Logics.Listeners.AddContact;
 import Chatver2.Logics.Listeners.ListReact;
 import Chatver2.Logics.Listeners.SendText;
+import java.io.IOException;
 import java.io.ObjectInputStream;
+import java.net.BindException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import javax.swing.ListSelectionModel;
+import Chatver2.AppMain;
+import java.util.logging.Logger;
 
 /**
  *
@@ -33,6 +37,8 @@ public class ChatManager implements Runnable {
     public String ipSend;
 
     public SendText evento;
+    
+    private Logger bitacora = AppMain.bitacora;
 
     public ChatManager(AppInterface fr) {
         frame = fr;
@@ -78,11 +84,12 @@ public class ChatManager implements Runnable {
     public void run() {
         
         while (true) { //Tries to connect to the first available port
+            Socket socketIn = null;
             try {
                 ServerSocket servidor = new ServerSocket(puerto);
                 System.out.println(puerto);
                 evento.setPort(puerto);
-                Socket socketIn;
+                bitacora.info("Se creó el puerto");
                 Package rec;
                 while (true) { //Checks out if a message has been received
                     socketIn = servidor.accept();
@@ -101,12 +108,26 @@ public class ChatManager implements Runnable {
                         }
                         
                     }
-
-                    socketIn.close();
                 }
-            } catch (Exception e) {
-                System.out.println(e);
+            } catch (BindException e) {
+                bitacora.info("El puerto esta ocupado"+e.getMessage());
                 puerto++;
+            }
+            catch (ClassNotFoundException e0){
+                bitacora.severe(e0.getMessage());
+            }
+            catch (IOException e1){
+                bitacora.severe(e1.getMessage());
+            }
+            finally{
+                if (socketIn != null){
+                    try{
+                        socketIn.close();
+                    }
+                    catch (IOException e4){
+                        bitacora.severe("Ocurrió un error al cerrar el puerto"+e4.getMessage());
+                    }
+                }
             }
         }
     }
