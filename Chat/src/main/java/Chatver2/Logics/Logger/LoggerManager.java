@@ -26,7 +26,7 @@ public class LoggerManager {
            FileHandler handler = new FileHandler(file);
            bitacora.addHandler(handler);
        }
-       catch(IOException e){
+       catch(IOException e){ // This happens if there was an error creating or replacing the .txt.
            bitacora = Logger.getGlobal();
            bitacora.severe("Error al crear la bitacora: "+ e.getMessage());
        }
