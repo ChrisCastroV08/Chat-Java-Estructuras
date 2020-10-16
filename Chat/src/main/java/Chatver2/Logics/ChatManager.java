@@ -9,10 +9,14 @@ import Chatver2.GUI.AppInterface;
 import Chatver2.Logics.Listeners.AddContact;
 import Chatver2.Logics.Listeners.ListReact;
 import Chatver2.Logics.Listeners.SendText;
+import java.io.IOException;
 import java.io.ObjectInputStream;
+import java.net.BindException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import javax.swing.ListSelectionModel;
+import Chatver2.AppMain;
+import java.util.logging.Logger;
 
 /**
  *
@@ -33,6 +37,8 @@ public class ChatManager implements Runnable {
     public String ipSend;
 
     public SendText evento;
+    
+    private Logger bitacora = AppMain.bitacora;
 
     public ChatManager(AppInterface fr) {
         frame = fr;
@@ -78,11 +84,12 @@ public class ChatManager implements Runnable {
     public void run() {
         
         while (true) { //Tries to connect to the first available port
+            Socket socketIn = null;
             try {
                 ServerSocket servidor = new ServerSocket(puerto);
                 System.out.println(puerto);
                 evento.setPort(puerto);
-                Socket socketIn;
+                bitacora.info("Se creó el puerto");
                 Package rec;
                 while (true) { //Checks out if a message has been received
                     socketIn = servidor.accept();
@@ -90,7 +97,7 @@ public class ChatManager implements Runnable {
 
                     rec = (Package) pk.readObject();
                     String contact = rec.getMyIp()+":"+rec.getMyport();
-                    if (!listch.isIn(contact)) { //
+                    if (!listch.isIn(contact)) { // Checks if the receiver is already in the contact list.
 
                         listch.addBoth(contact, "Conversacion con: " + contact + "\n" + "Recibido: " + rec.getMsg() + "\n");
                         frame.listaContacts.setListData(listch.getContacts().toArray());
@@ -101,12 +108,27 @@ public class ChatManager implements Runnable {
                         }
                         
                     }
-
-                    socketIn.close();
                 }
-            } catch (Exception e) {
-                System.out.println(e);
+            } catch (BindException e) { // If the port is in use or the local request is invalid, this exception
+                                        // write it in the .txt and updates the port, to locate the correct one.
+                bitacora.info("El puerto esta ocupado"+e.getMessage());
                 puerto++;
+            }
+            catch (ClassNotFoundException e0){ // This exception occurs when the incorrect class was selected or it was not found.
+                bitacora.severe(e0.getMessage());
+            }
+            catch (IOException e1){ // This exception happens if there was an error reading the console
+                bitacora.severe(e1.getMessage());
+            }
+            finally{
+                if (socketIn != null){
+                    try{
+                        socketIn.close();
+                    }
+                    catch (IOException e4){ // This exception detects if the socket didn't close,so it writes it in the .txt.
+                        bitacora.severe("Ocurrió un error al cerrar el puerto"+e4.getMessage());
+                    }
+                }
             }
         }
     }
